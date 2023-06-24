@@ -174,7 +174,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
         fontSize="2xl"
         fontFamily="monospace"
         fontWeight="bold">
-        Logo
+        Connectify
       </Text>
 
       <HStack spacing={{ base: '0', md: '6' }}>
