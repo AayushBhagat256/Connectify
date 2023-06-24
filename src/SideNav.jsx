@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import {
   IconButton,
   Avatar,
@@ -29,21 +29,27 @@ import {
   FiMenu,
   FiBell,
   FiChevronDown,
+  FiUser,
+  FiPlusCircle,
 } from 'react-icons/fi';
 import LargeWithNewsletter from './Footer';
+import BlogPostWithImage from './Pages/Blog';
+import ArticleList from './Pages/Blog';
+import { Route, Router, Routes } from 'react-router-dom';
 
 const LinkItems  = [
-  { name: 'Home', icon: <FiCompass/> },
-  { name: 'Trending', icon: <FiCompass/> },
-  { name: 'Explore', icon: <FiCompass/> },
-  { name: 'Favourites', icon: <FiCompass/>},
-  { name: 'Settings', icon: <FiCompass/> },
+  { name: 'Home', icon: <FiHome/>,route:'/' },
+  { name: 'Add Post', icon: <FiPlusCircle/>,route:'/' },
+  { name: 'Find Friends', icon: <FiCompass/>,route:'/' },
+  { name: 'View/Edit profile', icon: <FiUser/>,route:'/'},
+  { name: 'Settings', icon: <FiSettings/>,route:'/' },
 ];
 
 export default function SidebarWithHeader({
   children,
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [option,setOption] = useState('Home')
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <SidebarContent
@@ -65,6 +71,7 @@ export default function SidebarWithHeader({
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="0">
+        <ArticleList/>
         <LargeWithNewsletter/>
       </Box>
     </Box>
@@ -86,12 +93,12 @@ const SidebarContent = ({ onClose, ...rest }) => {
       {...rest}>
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
+          Connectify
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
+        <NavItem key={link.name} route={link.route} icon={link.icon}>
           {link.name}
         </NavItem>
       ))}
@@ -100,9 +107,9 @@ const SidebarContent = ({ onClose, ...rest }) => {
 };
 
 
-const NavItem = ({ icon, children, ...rest }) => {
+const NavItem = ({ route, icon, children, ...rest }) => {
   return (
-    <Link href="#" style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+    <Link href={route}   style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
       <Flex
         align="center"
         p="4"
