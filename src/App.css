@@ -1,0 +1,28 @@
+/* Image Preview  */
+.image-uploader {
+    text-align: center;
+  }
+  
+  .upload-label {
+    display: inline-block;
+    cursor: pointer;
+    border: 2px dashed #ccc;
+    padding: 1em;
+    border-radius: 4px;
+  }
+  
+  .upload-label:hover {
+    border-color: #aaa;
+  }
+  
+  .upload-text {
+    font-size: 1em;
+    color: #888;
+  }
+  
+  .preview-image {
+    max-width: 100%;
+    margin-top: 1em;
+    border-radius: 4px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }

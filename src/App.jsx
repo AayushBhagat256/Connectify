@@ -16,6 +16,12 @@ function App() {
         <Routes>
           <Route path='/home' element={<SidebarWithHeader/>}/>
         </Routes>
+        <Routes>
+          <Route path='/add' element={<SidebarWithHeader/>}/>
+        </Routes>
+        <Routes>
+          <Route path='/setting' element={<SidebarWithHeader/>}/>
+        </Routes>
         </Router>
         
       </ChakraProvider>

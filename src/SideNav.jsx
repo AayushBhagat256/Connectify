@@ -36,13 +36,15 @@ import LargeWithNewsletter from './Footer';
 import BlogPostWithImage from './Pages/Blog';
 import ArticleList from './Pages/Blog';
 import { Route, Router, Routes } from 'react-router-dom';
+import AddPost from './Pages/AddPost';
+import Setting from './Pages/setting/Setting';
 
 const LinkItems  = [
-  { name: 'Home', icon: <FiHome/>,route:'/' },
-  { name: 'Add Post', icon: <FiPlusCircle/>,route:'/' },
-  { name: 'Find Friends', icon: <FiCompass/>,route:'/' },
-  { name: 'View/Edit profile', icon: <FiUser/>,route:'/'},
-  { name: 'Settings', icon: <FiSettings/>,route:'/' },
+  { name: 'Home', icon: <FiHome/>,route:'/home' },
+  { name: 'Add Post', icon: <FiPlusCircle/>,route:'/add' },
+  { name: 'Find Friends', icon: <FiCompass/>,route:'/explore' },
+  { name: 'View/Edit profile', icon: <FiUser/>,route:'/profile'},
+  { name: 'Settings', icon: <FiSettings/>,route:'/setting' },
 ];
 
 export default function SidebarWithHeader({
@@ -50,6 +52,9 @@ export default function SidebarWithHeader({
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [option,setOption] = useState('Home')
+  // console.log(window.location.href)
+  const url = new URL(window.location.href);
+  console.log(url.pathname);
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <SidebarContent
@@ -71,7 +76,13 @@ export default function SidebarWithHeader({
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="0">
-        <ArticleList/>
+        {
+          url.pathname=='/home'?(<ArticleList/>):(
+            url.pathname=='/add'?(<AddPost/>):(
+              url.pathname=='/setting'?(<Setting/>):(<p>This is different</p>))
+          )
+        }
+        
         <LargeWithNewsletter/>
       </Box>
     </Box>
@@ -109,7 +120,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
 
 const NavItem = ({ route, icon, children, ...rest }) => {
   return (
-    <Link href={route}   style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+    <Link href={route}  style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
       <Flex
         align="center"
         p="4"
@@ -205,8 +216,8 @@ const MobileNav = ({ onOpen, ...rest }) => {
               bg={useColorModeValue('white', 'gray.900')}
               borderColor={useColorModeValue('gray.200', 'gray.700')}>
               <MenuItem>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
-              <MenuItem>Billing</MenuItem>
+              {/* <MenuItem>Settings</MenuItem> */}
+              {/* <MenuItem>Billing</MenuItem> */}
               <MenuDivider />
               <MenuItem>Sign out</MenuItem>
             </MenuList>
