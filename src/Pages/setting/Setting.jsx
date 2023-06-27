@@ -4,6 +4,14 @@ import {
     useColorMode,
 
 } from '@chakra-ui/react';
+import {
+    Accordion,
+    AccordionItem,
+    AccordionButton,
+    AccordionPanel,
+    AccordionIcon,
+} from '@chakra-ui/react'
+import './Login.css'
 
 function Setting() {
     const { colorMode, toggleColorMode } = useColorMode();
@@ -100,12 +108,54 @@ function Setting() {
                         </svg>
                     </label>
                 </Flex>
-                <Flex justify={'center'} alignItems={'center'}>
+                <Flex justify={'space-between'} alignItems={'center'}>
                     <Text fontSize={'20px'} ml={'40px'}>Notifications</Text>
                     <div class="center">
                         <input name="" type="checkbox" checked={isCheckedNot}
                             onChange={handleCheckboxChangeNot} />
                     </div>
+                </Flex>
+
+                <Flex justify={'space-between'} alignItems={'center'} mt={6}>
+                    <Text fontSize={'20px'} >Delete your Account</Text>
+                    <button>
+                        <span class="shadow"></span>
+                        <span class="edge"></span>
+                        <span class="front text"> Delete Account
+                        </span>
+                    </button>
+                </Flex>
+
+                <Flex justify={'center'} alignItems={'center'}>
+                    <Accordion defaultIndex={[0]} allowMultiple width={'40vw'} mt={'5'}>
+                        <AccordionItem>
+                            <h2>
+                                <AccordionButton>
+                                    <Box as="span" flex='1' textAlign='left'>
+                                        About Us
+                                    </Box>
+                                    <AccordionIcon />
+                                </AccordionButton>
+                            </h2>
+                            <AccordionPanel pb={4}>
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto beatae, exercitationem placeat molestias nisi voluptates et laborum facere dolore eos corrupti enim facilis, soluta dignissimos doloribus fugiat? Asperiores consequatur similique non saepe id ipsa ipsum cupiditate officiis. Ex modi ipsam enim voluptatem facere laudantium maxime officiis molestiae, neque sunt, dolores quisquam minima voluptates iure corrupti rerum dolorum dolore esse aut, illum minus accusamus. Ipsum minima accusamus perferendis asperiores molestias corrupti earum distinctio voluptas dignissimos deserunt.
+                            </AccordionPanel>
+                        </AccordionItem>
+
+                        <AccordionItem>
+                            <h2>
+                                <AccordionButton>
+                                    <Box as="span" flex='1' textAlign='left'>
+                                        Terms and Conditions
+                                    </Box>
+                                    <AccordionIcon />
+                                </AccordionButton>
+                            </h2>
+                            <AccordionPanel pb={4}>
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus amet, ad dicta ut esse adipisci excepturi. Dolores assumenda suscipit eveniet alias nemo, explicabo ipsum in quod esse vel quidem quo, incidunt quibusdam ex culpa fugiat atque voluptatem animi sint nesciunt? Quasi quos beatae deserunt. Magni aliquid nostrum magnam expedita hic.
+                            </AccordionPanel>
+                        </AccordionItem>
+                    </Accordion>
                 </Flex>
 
             </Box>
