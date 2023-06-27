@@ -22,6 +22,9 @@ function App() {
         <Routes>
           <Route path='/setting' element={<SidebarWithHeader/>}/>
         </Routes>
+        <Routes>
+          <Route path='/explore' element={<SidebarWithHeader/>}/>
+        </Routes>
         </Router>
         
       </ChakraProvider>

@@ -38,6 +38,8 @@ import ArticleList from './Pages/Blog';
 import { Route, Router, Routes } from 'react-router-dom';
 import AddPost from './Pages/AddPost';
 import Setting from './Pages/setting/Setting';
+import SocialProfileWithImage from './Pages/Explore/Explore';
+import { BiLogIn } from 'react-icons/bi';
 
 const LinkItems  = [
   { name: 'Home', icon: <FiHome/>,route:'/home' },
@@ -79,7 +81,10 @@ export default function SidebarWithHeader({
         {
           url.pathname=='/home'?(<ArticleList/>):(
             url.pathname=='/add'?(<AddPost/>):(
-              url.pathname=='/setting'?(<Setting/>):(<p>This is different</p>))
+              url.pathname=='/setting'?(<Setting/>):(
+                url.pathname=='/explore'?(<SocialProfileWithImage/>):(
+                  url.pathname=='/profile'?(<BiLogIn/>):((<p>This is different</p>))))
+              )
           )
         }
         
