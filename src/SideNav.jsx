@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import {
   IconButton,
   Avatar,
@@ -31,32 +31,67 @@ import {
   FiChevronDown,
   FiUser,
   FiPlusCircle,
+  FiLogOut,
 } from 'react-icons/fi';
 import LargeWithNewsletter from './Footer';
 import BlogPostWithImage from './Pages/Blog';
 import ArticleList from './Pages/Blog';
-import { Route, Router, Routes } from 'react-router-dom';
+import { Route, Router, Routes, useNavigate } from 'react-router-dom';
 import AddPost from './Pages/AddPost';
 import Setting from './Pages/setting/Setting';
 import SocialProfileWithImage from './Pages/Explore/Explore';
-import { BiLogIn } from 'react-icons/bi';
+import { BiLogIn, BiLogOut, BiLogOutCircle } from 'react-icons/bi';
+import axios from 'axios';
+import { AtSignIcon, SettingsIcon } from '@chakra-ui/icons';
 
-const LinkItems  = [
-  { name: 'Home', icon: <FiHome/>,route:'/home' },
-  { name: 'Add Post', icon: <FiPlusCircle/>,route:'/add' },
-  { name: 'Find Friends', icon: <FiCompass/>,route:'/explore' },
-  { name: 'View/Edit profile', icon: <FiUser/>,route:'/profile'},
-  { name: 'Settings', icon: <FiSettings/>,route:'/setting' },
+const LinkItems = [
+  { name: 'Home', icon: <FiHome />, route: '/home' },
+  { name: 'Add Post', icon: <FiPlusCircle />, route: '/add' },
+  { name: 'Find Friends', icon: <FiCompass />, route: '/explore' },
+  { name: 'View/Edit profile', icon: <FiUser />, route: '/profile' },
+  { name: 'Settings', icon: <FiSettings />, route: '/setting' },
 ];
+
+// const nav = useNavigate();
+
 
 export default function SidebarWithHeader({
   children,
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [option,setOption] = useState('Home')
+  const [option, setOption] = useState('Home')
   // console.log(window.location.href)
   const url = new URL(window.location.href);
   console.log(url.pathname);
+  const [user, setUser] = useState()
+  const userinfo = () => {
+
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `http://localhost:8000/userProfile/${localStorage.getItem('id')}`,
+      headers: {
+        'Authorization': `${localStorage.getItem('token')}`
+      }
+    };
+
+    axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        setUser(response.data)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  }
+  useEffect(
+    () => {
+      userinfo();
+    },[]
+  )
+  const linkss = 'http://localhost:8000/'
+
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <SidebarContent
@@ -79,16 +114,16 @@ export default function SidebarWithHeader({
       <MobileNav onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="0">
         {
-          url.pathname=='/home'?(<ArticleList/>):(
-            url.pathname=='/add'?(<AddPost/>):(
-              url.pathname=='/setting'?(<Setting/>):(
-                url.pathname=='/explore'?(<SocialProfileWithImage/>):(
-                  url.pathname=='/profile'?(<BiLogIn/>):((<p>This is different</p>))))
-              )
+          url.pathname == '/home' ? (<ArticleList />) : (
+            url.pathname == '/add' ? (<AddPost />) : (
+              url.pathname == '/setting' ? (<Setting />) : (
+                url.pathname == '/explore' ? (<SocialProfileWithImage />) : (
+                  url.pathname == '/profile' ? (<BiLogIn />) : ((<p>This is different</p>))))
+            )
           )
         }
-        
-        <LargeWithNewsletter/>
+
+        <LargeWithNewsletter />
       </Box>
     </Box>
   );
@@ -125,7 +160,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
 
 const NavItem = ({ route, icon, children, ...rest }) => {
   return (
-    <Link href={route}  style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+    <Link href={route} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
       <Flex
         align="center"
         p="4"
@@ -138,15 +173,15 @@ const NavItem = ({ route, icon, children, ...rest }) => {
           color: 'white',
         }}
         {...rest}>
-            <Box
-            mr="4"
-            fontSize="16"
-            _groupHover={{
-                color: 'white',
-            }}
-            >
-            {icon}
-            </Box>
+        <Box
+          mr="4"
+          fontSize="16"
+          _groupHover={{
+            color: 'white',
+          }}
+        >
+          {icon}
+        </Box>
         {children}
       </Flex>
     </Link>
@@ -155,6 +190,39 @@ const NavItem = ({ route, icon, children, ...rest }) => {
 
 
 const MobileNav = ({ onOpen, ...rest }) => {
+  const [user, setUser] = useState()
+  const nav = useNavigate();
+  const Signout = () => {
+    localStorage.clear()
+    nav('/')
+  }
+  const userinfo = () => {
+
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `http://localhost:8000/userProfile/${localStorage.getItem('id')}`,
+      headers: {
+        'Authorization': `${localStorage.getItem('token')}`
+      }
+    };
+
+    axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        setUser(response.data)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  }
+  useEffect(
+    () => {
+      userinfo();
+    },[]
+  )
+  const link = 'http://localhost:8000/'
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -196,21 +264,26 @@ const MobileNav = ({ onOpen, ...rest }) => {
               transition="all 0.3s"
               _focus={{ boxShadow: 'none' }}>
               <HStack>
-                <Avatar
+                {/* <Avatar
                   size={'sm'}
                   src={
-                    'https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
+                    link+user.picturepath
                   }
-                />
+                /> */}
                 <VStack
                   display={{ base: 'none', md: 'flex' }}
                   alignItems="flex-start"
                   spacing="1px"
                   ml="2">
-                  <Text fontSize="sm">Justina Clark</Text>
-                  <Text fontSize="xs" color="gray.600">
-                    Admin
-                  </Text>
+                  {/* <Text fontSize="sm">{user.userName}</Text> */}
+                  {/* <Text fontSize="xs" color="gray.600">
+                    you
+                  </Text> */}
+                  {/* <SettingsIcon/> */}
+                  <BiLogOut/>
+                  {/* <BiLogOutCircle/> */}
+                  {/* <AtSignIcon/> */}
+                  {/* <FiLogOut/> */}
                 </VStack>
                 <Box display={{ base: 'none', md: 'flex' }}>
                   <FiChevronDown />
@@ -224,7 +297,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
               {/* <MenuItem>Settings</MenuItem> */}
               {/* <MenuItem>Billing</MenuItem> */}
               <MenuDivider />
-              <MenuItem>Sign out</MenuItem>
+              <MenuItem onClick={Signout} >Sign out</MenuItem>
             </MenuList>
           </Menu>
         </Flex>

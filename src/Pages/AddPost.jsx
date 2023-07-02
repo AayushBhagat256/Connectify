@@ -1,11 +1,17 @@
 import { useState, useRef } from 'react';
 import { Box, Button, Flex, FormControl, FormLabel, Heading, Input, Textarea } from '@chakra-ui/react';
+import axios from 'axios';
+import { Toast } from '@chakra-ui/react';
+import { useToast } from '@chakra-ui/react'
 
 const AddPost = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [image, setImage] = useState(null);
     const fileInputRef = useRef(null);
+    const ajwt = localStorage.getItem("AJWT");
+    const toast = useToast()
+    // console.log(ajwt);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -27,6 +33,63 @@ const AddPost = () => {
         console.log(fileInputRef)
     };
 
+
+    const postPost = () => {
+        if (fileInputRef.current && fileInputRef.current.files.length > 0) {
+          let data = new FormData();
+          data.append('postPic', fileInputRef.current.files[0]);
+          data.append('description', description);
+          data.append('title', title);
+          data.append('userModelId',localStorage.getItem('id'))
+      
+          let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: 'http://localhost:8000/post/',
+            headers: {
+              'Authorization': `${localStorage.getItem('token')}`,
+            },
+            data: data
+          };
+
+          console.log(config.headers)
+      
+          axios.request(config)
+            .then((response) => {
+              console.log(JSON.stringify(response.data));
+              toast({
+                title: 'Your Post is uploaded',
+                description: JSON.stringify(response.data.message),
+                status: 'success',
+                duration: 2500,
+                isClosable: true,
+              })
+              setDescription('')
+              setTitle('')
+            })
+            .catch((error) => {
+              console.log(error);
+              toast({
+                title: 'Post cannot be created',
+                description: "Try again...",
+                status: 'error',
+                duration: 2500,
+                isClosable: true,
+              })
+            });
+        } else {
+          // Handle the case when no file is selected
+        //   alert("Please select a file");
+          toast({
+            title: 'No Image found',
+            description: "Please upload a Image",
+            status: 'error',
+            duration: 2500,
+            isClosable: true,
+          })
+        }
+      }
+      
 
     return (
         <Box maxWidth="500px" mx="auto" p='4'>
@@ -68,14 +131,15 @@ const AddPost = () => {
                     </div>
                 </FormControl>
                 <Flex justify={'flex-end'}>
-                <Button type="submit"
-                variant={'ghost'}
-                backgroundColor={'cyan.700'}
-                _hover={{
-                    bg:'cyan.400'
-                }} mt={4}>
-                    Submit
-                </Button>
+                    <Button type="submit"
+                        onClick={postPost}
+                        variant={'ghost'}
+                        backgroundColor={'cyan.700'}
+                        _hover={{
+                            bg: 'cyan.400'
+                        }} mt={4}>
+                        Submit
+                    </Button>
                 </Flex>
             </form>
         </Box>

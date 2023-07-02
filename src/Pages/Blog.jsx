@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Heading,
@@ -14,6 +14,16 @@ import {
   Container,
   VStack,
 } from '@chakra-ui/react';
+import axios from 'axios';
+
+
+
+
+
+
+
+
+
 
 
 
@@ -36,12 +46,12 @@ const BlogTags = (props) => {
 export const BlogAuthor = (props) => {
   return (
     <HStack marginTop="2" spacing="2" display="flex" alignItems="center">
-      <Image
+      {/* <Image
         borderRadius="full"
         boxSize="40px"
         src="https://100k-faces.glitch.me/random-image"
         alt={`Avatar of ${props.name}`}
-      />
+      /> */}
       <Text fontWeight="medium">{props.name}</Text>
       <Text>—</Text>
       <Text>{props.date.toLocaleDateString()}</Text>
@@ -50,10 +60,44 @@ export const BlogAuthor = (props) => {
 };
 
 const ArticleList = () => {
+  const [postData,setPostData] = useState([]);
+  const [userPost,setUserPost] = useState([]);
+  const getPosts = () => {
+  
+
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: 'http://localhost:8000/post/',
+      headers: {
+        'Authorization': `${localStorage.getItem('token')}`,
+      },
+    };
+  
+    axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        setPostData(response.data.posts)
+        setUserPost(response.data.user)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  
+  }
+  useEffect(
+    ()=>{
+      getPosts();
+    },[]
+  )
+  const link = 'http://localhost:8000/'
   return (
     <Container maxW={'7xl'} p="12">
       {/* <Heading as="h1">Stories by Chakra Templates</Heading> */}
-      <Box
+      {
+        postData.map(map=>{
+          return(
+          <Box
         marginTop={{ base: '1', sm: '5' }}
         display="flex"
         flexDirection={{ base: 'column', sm: 'row' }}
@@ -73,24 +117,13 @@ const ArticleList = () => {
               <Image
                 borderRadius="lg"
                 src={
-                  'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=800&q=80'
+                  link+map.postPic
                 }
                 alt="some good alt text"
                 objectFit="contain"
               />
             </Link>
           </Box>
-          {/* <Box zIndex="1" width="100%" position="absolute" height="100%">
-            <Box
-              bgGradient={useColorModeValue(
-                'radial(orange.600 1px, transparent 1px)',
-                'radial(orange.300 1px, transparent 1px)'
-              )}
-              backgroundSize="20px 20px"
-              opacity="0.4"
-              height="100%"
-            />
-          </Box> */}
         </Box>
         <Box
           display="flex"
@@ -101,7 +134,7 @@ const ArticleList = () => {
           {/* <BlogTags tags={['Engineering', 'Product']} /> */}
           <Heading marginTop="1">
             <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
-              Blog article title
+              {map.title}
             </Link>
           </Heading>
           <Text
@@ -109,14 +142,23 @@ const ArticleList = () => {
             marginTop="2"
             color={useColorModeValue('gray.700', 'gray.200')}
             fontSize="lg">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book.
+            {map.description}
           </Text>
-          <BlogAuthor name="John Doe" date={new Date('2021-04-06T19:01:27Z')} />
+
+          <BlogAuthor name="Posted At" date={new Date(map.createdAt)} />
+          
+          {/* {
+            map.id==userPost.id?(<h1>{userPost.id}</h1>):()
+          } */}
+          {/* {userPost.map(map=>{
+            return(
+              <BlogAuthor name="John Doe" date={new Date('2021-04-06T19:01:27Z')} />
+            )
+          })} */}
         </Box>
       </Box>
+        )})
+      }
     </Container>
   );
 };

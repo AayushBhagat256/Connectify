@@ -4,6 +4,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import SidebarWithHeader from './SideNav'
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import SimpleCard from './Pages/Auth/Login'
+import SignupCard from './Pages/Auth/Register'
 
 function App() {
   return (
@@ -12,6 +13,9 @@ function App() {
         <Router>
         <Routes>
         <Route path='/' element={<><SimpleCard/></>} />
+      </Routes>
+      <Routes>
+        <Route path='/signup' element={<><SignupCard/></>} />
       </Routes>
         <Routes>
           <Route path='/home' element={<SidebarWithHeader/>}/>

@@ -16,9 +16,65 @@ import {
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useState } from 'react';
+import { Navigate, json, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Cookies from 'universal-cookie';
+import { useToast } from '@chakra-ui/react'
 
 export default function SimpleCard() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email,setEmail] = useState()
+  const [pass,setPass] = useState()
+  const [token, setToken] = useState([]);
+  const nav = useNavigate()
+  const toast = useToast()
+  // const cookies = new Cookies();
+
+  const diffPage = () => {
+    nav('/signup')
+  }
+
+  const loginUser = () => {
+
+    let data = JSON.stringify({
+      "email": email,
+      "password": pass
+    });
+
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'http://localhost:8000/login',
+      headers: {
+        'Authorization': '',
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        localStorage.setItem("AJWT","Bearer "+JSON.stringify(response.data.token));
+        let formattedToken = localStorage.getItem("AJWT").replace(/"/g, '');
+        console.log(formattedToken)
+        localStorage.setItem("token",formattedToken)
+        localStorage.setItem("id",JSON.stringify(response.data.id));
+        toast({
+          title: "Logged in",
+          description: JSON.stringify(response.data.message),
+          status: 'success',
+          duration: 2500,
+          isClosable: true,
+        })
+        nav('/home')
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  }
+
 
   return (
     <Flex
@@ -41,7 +97,7 @@ export default function SimpleCard() {
           <Stack spacing={4}>
             <FormControl id="email">
               <FormLabel>Email address</FormLabel>
-              <Input type="email" />
+              <Input type="email" value={email} onChange={e=>setEmail(e.target.value)} />
             </FormControl>
             {/* <FormControl id="password">
               <FormLabel>Password</FormLabel>
@@ -50,7 +106,7 @@ export default function SimpleCard() {
             <FormControl id="password" isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>
-                <Input type={showPassword ? 'text' : 'password'} />
+                <Input type={showPassword ? 'text' : 'password'} value={pass} onChange={e=>setPass(e.target.value)} />
                 <InputRightElement h={'full'}>
                   <Button
                     variant={'ghost'}
@@ -71,11 +127,12 @@ export default function SimpleCard() {
                 <Link color={'blue.400'}>Forgot password?</Link>
               </Stack>
               <Stack>
-                <Link color={'blue.400'}>New user..? Sign Up</Link>
+                <Link color={'blue.400'} onClick={diffPage}>New user..? Sign Up</Link>
               </Stack>
               <Button
                 bg={'blue.400'}
                 color={'white'}
+                onClick={loginUser}
                 _hover={{
                   bg: 'blue.500',
                 }}>
@@ -88,3 +145,4 @@ export default function SimpleCard() {
     </Flex>
   );
 }
+
