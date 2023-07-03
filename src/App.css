@@ -137,4 +137,10 @@
     border-color: rgb(24, 196, 24);
     transform: rotate(45deg) translate(5px, -10px);
   }
+
+@media (max-width:800px) {
+  #flexstats{
+    flex-direction: column;
+  }
+}
   

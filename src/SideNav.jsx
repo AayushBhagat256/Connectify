@@ -43,6 +43,7 @@ import SocialProfileWithImage from './Pages/Explore/Explore';
 import { BiLogIn, BiLogOut, BiLogOutCircle } from 'react-icons/bi';
 import axios from 'axios';
 import { AtSignIcon, SettingsIcon } from '@chakra-ui/icons';
+import Profile from './Pages/Profile/Profile';
 
 const LinkItems = [
   { name: 'Home', icon: <FiHome />, route: '/home' },
@@ -118,7 +119,11 @@ export default function SidebarWithHeader({
             url.pathname == '/add' ? (<AddPost />) : (
               url.pathname == '/setting' ? (<Setting />) : (
                 url.pathname == '/explore' ? (<SocialProfileWithImage />) : (
-                  url.pathname == '/profile' ? (<BiLogIn />) : ((<p>This is different</p>))))
+                  url.pathname == '/profile' ? (<Profile/>) : (
+                    (<p>This is different</p>)
+                  )
+                )
+              )
             )
           )
         }
@@ -190,7 +195,8 @@ const NavItem = ({ route, icon, children, ...rest }) => {
 
 
 const MobileNav = ({ onOpen, ...rest }) => {
-  const [user, setUser] = useState()
+  const [user, setUser] = useState([])
+  const link = 'http://localhost:8000/'
   const nav = useNavigate();
   const Signout = () => {
     localStorage.clear()
@@ -211,6 +217,8 @@ const MobileNav = ({ onOpen, ...rest }) => {
       .then((response) => {
         console.log(JSON.stringify(response.data));
         setUser(response.data)
+        localStorage.setItem('username',user.userName)
+        localStorage.setItem('profile',link+user.picturepath)
       })
       .catch((error) => {
         console.log(error);
@@ -222,7 +230,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
       userinfo();
     },[]
   )
-  const link = 'http://localhost:8000/'
+  
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -264,23 +272,23 @@ const MobileNav = ({ onOpen, ...rest }) => {
               transition="all 0.3s"
               _focus={{ boxShadow: 'none' }}>
               <HStack>
-                {/* <Avatar
+                <Avatar
                   size={'sm'}
                   src={
                     link+user.picturepath
                   }
-                /> */}
+                />
                 <VStack
                   display={{ base: 'none', md: 'flex' }}
                   alignItems="flex-start"
                   spacing="1px"
                   ml="2">
-                  {/* <Text fontSize="sm">{user.userName}</Text> */}
-                  {/* <Text fontSize="xs" color="gray.600">
+                  <Text fontSize="sm">{user.userName}</Text> 
+                  <Text fontSize="xs" color="gray.600">
                     you
-                  </Text> */}
+                  </Text>
                   {/* <SettingsIcon/> */}
-                  <BiLogOut/>
+                  {/* <BiLogOut/> */}
                   {/* <BiLogOutCircle/> */}
                   {/* <AtSignIcon/> */}
                   {/* <FiLogOut/> */}

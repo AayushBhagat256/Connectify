@@ -157,7 +157,7 @@ const ArticleList = () => {
           })} */}
         </Box>
       </Box>
-        )})
+        )}).reverse()
       }
     </Container>
   );

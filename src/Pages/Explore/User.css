@@ -14,7 +14,7 @@
   }
   
   .image {
-    height: 7rem;
+    height: auto;
     width: 7rem;
     border-radius: 0.5rem;
     background-color: rgb(118, 36, 194);
