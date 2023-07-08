@@ -27,7 +27,7 @@ import {
   ModalCloseButton,
 } from '@chakra-ui/react'
 import { SmallCloseIcon } from '@chakra-ui/icons';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import User from '../Explore/User';
 import BlogPostWithImage from './Myposts';
@@ -94,6 +94,41 @@ export default function Profile() {
   console.log(user)
   const [username, setUsername] = useState(user.userName)
   console.log(username)
+
+  const [updateUserName, setUpdateUserName] = useState();
+  const [updateEmail, setUpdateEmail] = useState();
+  const updateref = useRef(null)
+
+  const profileEditFunction = () => {
+    // const axios = require('axios');
+    let data = JSON.stringify({
+      "email": updateEmail,
+      "userName": updateUserName,
+      // "picturepath": updateref.current.files[0]
+    });
+
+    let config = {
+      method: 'put',
+      maxBodyLength: Infinity,
+      url: `http://localhost:8000/userUpdate/${localStorage.getItem('id')}`,
+      headers: {
+        'Authorization': `${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        alert("Updated")
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Error")
+      });
+
+  }
   return (
     <>
       <Flex
@@ -198,12 +233,12 @@ export default function Profile() {
             <ModalBody pb={6}>
               <FormControl>
                 <FormLabel>User name</FormLabel>
-                <Input placeholder='UserName' />
+                <Input placeholder='UserName' value={updateUserName} onChange={e => setUpdateUserName(e.target.value)} />
               </FormControl>
 
               <FormControl mt={4}>
                 <FormLabel>Email : </FormLabel>
-                <Input placeholder='Email : ' />
+                <Input placeholder='Email : ' value={updateEmail} onChange={e => setUpdateEmail(e.target.value)} />
               </FormControl>
 
               <Center className='centerdiv'>
@@ -229,7 +264,7 @@ export default function Profile() {
                           )
                         }
                       </svg>
-                      <p>Browse File to upload!</p>
+                      <p>Browse File to upload! You need to be a paid member for this update</p>
                       {previewImage && <img className="preview-image" src={previewImage} alt="Preview" />}
                     </div>
                     <label htmlFor="file" className="footer">
@@ -243,14 +278,14 @@ export default function Profile() {
                       </svg>
                       <p>{selectedFile ? selectedFile.name : 'Not selected file'}</p>
                     </label>
-                    <input id="file" type="file" onChange={handleFileChange} />
+                    <input id="file" ref={updateref} type="file" onChange={handleFileChange} />
                   </div>
                 </FormControl>
               </Center>
             </ModalBody>
 
             <ModalFooter>
-              <Button colorScheme='blue' mr={3}>
+              <Button colorScheme='blue' mr={3} onClick={profileEditFunction}>
                 Save
               </Button>
               <Button onClick={onClose}>Cancel</Button>
