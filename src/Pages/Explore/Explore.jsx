@@ -22,7 +22,7 @@ export default function SocialProfileWithImage() {
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: 'http://localhost:8000/userfri/1',
+      url: `http://localhost:8000/userfri/${localStorage.getItem('id')}`,
       headers: {
         'Authorization': `${localStorage.getItem('token')}`
       }
